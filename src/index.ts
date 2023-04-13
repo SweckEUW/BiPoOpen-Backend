@@ -1,17 +1,71 @@
 import express, { Express, Request, Response} from "express";
 import cors from "cors";
-// const dotenv = require('dotenv');
+import {MongoClient, ServerApiVersion} from "mongodb"
+import * as dotenv from "dotenv";
 
-// dotenv.config();
-const port = 8000; //process.env.PORT
+dotenv.config();
 
 const app: Express = express();
 app.use(cors());
 
-app.get('/', (request: Request, response: Response) => {
-  response.send('Express + TypeScript Server');
+const uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORT}@cluster0.wpwuaak.mongodb.net/?retryWrites=true&w=majority`;
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
 });
 
-app.listen(port, () => {
-  console.log(`[server]: Server is running at http://localhost:${port}`);
+async function run() {
+  try {
+    // Connect the client to the server	(optional starting in v4.7)
+    await client.connect();
+    // Send a ping to confirm a successful connection
+    await client.db("admin").command({ ping: 1 });
+    console.log("Connected to Database")
+
+    app.listen(process.env.PORT, () => {
+      console.log('Server started');
+    });
+  } finally {
+    // Ensures that the client will close when you finish/error
+    await client.close();
+  }
+}
+run().catch(console.dir);
+
+app.get('/', (request: Request, response: Response) => {
+  response.send('Express + TypeScript Server New');
 });
+
+// // MotileParts
+// app.get('/MotileParts', motilePartsCollection.getMotileParts);
+
+// // Login/Register
+// app.post('/Login', UsersCollection.login);
+// app.post('/LoginJWT', Middleware.verifyJWT, UsersCollection.loginJWT);
+// app.post('/StayAlive', Middleware.verifyJWT, UsersCollection.stayAlive);
+// app.post('/Register', UsersCollection.addUser);
+// app.get('/VerifyEmail', UsersCollection.verifyUser);
+
+// // UserData
+// app.post('/User/Data', Middleware.verifyJWT, UsersCollection.getUserDataFromUser);
+// app.post('/User/Data/AddAddress', Middleware.verifyJWT, userDataCollection.addAddress);
+// app.post('/User/Data/RemoveAddress', Middleware.verifyJWT, userDataCollection.removeAddress);
+// app.post('/User/Data/UploadProfilePic',  multer({ storage: ImageUploadHandler.getStorage() }).single('file'), Middleware.verifyJWT, userDataCollection.updateProfilePic);
+// app.post('/User/Data/Modify', Middleware.verifyJWT, userDataCollection.modifyUserData);
+
+// // UserConfigurations
+// app.post('/User/Configs', Middleware.verifyJWT, UsersCollection.getConfigFromUser);
+// app.post('/User/Configs/Remove', Middleware.verifyJWT, UserConfigsCollection.removeUserConfiguration);
+// app.post('/User/Configs/Add', Middleware.verifyJWT, UserConfigsCollection.addUserConfiguration);
+// app.post('/User/Configs/GenerateThumbnail', Middleware.verifyJWT, BlenderJobs.renderThumbnail);
+// app.post('/User/Configs/Buy', Middleware.verifyJWT, UserConfigsCollection.setUserConfigToBought)
+
+// // static assets - public folder
+// let filename = fileURLToPath(import.meta.url);
+// let dirname = path.dirname(filename);
+// app.use(express.static(path.join(dirname, 'public')));
+
+// export default app
