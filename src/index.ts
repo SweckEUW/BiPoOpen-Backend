@@ -17,16 +17,12 @@ const client = new MongoClient(uri, {
   }
 });
 
-let collection: Collection;
-
 client.connect()
 .catch(error => { 
   console.error(error);
   process.exit(1);
 }).then(async client =>{
   console.log("Connected to Database")
-
-  collection = client.db('sample_restaurants').collection("neighborhoods");
 
   app.listen(process.env.PORT, () =>{
     console.log('Server started')
@@ -37,8 +33,8 @@ app.get('/', async (request: Request, response: Response) => {
   response.send('Express + TypeScript Server New');
 });
 
-app.get('/neighborhoods', async (request: Request, response: Response) => {
-  let collectionData = await collection.find().toArray();
+app.get('/teams', async (request: Request, response: Response) => {
+  let collectionData = await client.db('bipoopen').collection("teams").find().toArray();
   response.send(collectionData);
 });
 

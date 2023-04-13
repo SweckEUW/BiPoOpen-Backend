@@ -50,14 +50,12 @@ const client = new mongodb_1.MongoClient(uri, {
         deprecationErrors: true,
     }
 });
-let collection;
 client.connect()
     .catch(error => {
     console.error(error);
     process.exit(1);
 }).then((client) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("Connected to Database");
-    collection = client.db('sample_restaurants').collection("neighborhoods");
     app.listen(process.env.PORT, () => {
         console.log('Server started');
     });
@@ -65,8 +63,8 @@ client.connect()
 app.get('/', (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     response.send('Express + TypeScript Server New');
 }));
-app.get('/neighborhoods', (request, response) => __awaiter(void 0, void 0, void 0, function* () {
-    let collectionData = yield collection.find().toArray();
+app.get('/teams', (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+    let collectionData = yield client.db('bipoopen').collection("teams").find().toArray();
     response.send(collectionData);
 }));
 // // MotileParts
