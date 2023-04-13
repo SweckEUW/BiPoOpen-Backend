@@ -50,12 +50,14 @@ const client = new mongodb_1.MongoClient(uri, {
         deprecationErrors: true,
     }
 });
+let collection;
 client.connect()
     .catch(error => {
     console.error(error);
     process.exit(1);
 }).then((client) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("Connected to Database");
+    collection = client.db('sample_restaurants').collection("neighborhoods");
     app.listen(process.env.PORT, () => {
         console.log('Server started');
     });
@@ -63,9 +65,9 @@ client.connect()
 app.get('/', (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     response.send('Express + TypeScript Server New');
 }));
-app.get('/restaurants', (request, response) => __awaiter(void 0, void 0, void 0, function* () {
-    let collection = yield client.db('sample_restaurants').collection("restaurants").find().toArray();
-    response.send(collection);
+app.get('/neighborhoods', (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+    let collectionData = yield collection.find().toArray();
+    response.send(collectionData);
 }));
 // // MotileParts
 // app.get('/MotileParts', motilePartsCollection.getMotileParts);

@@ -1,6 +1,6 @@
 import express, { Express, Request, Response} from "express";
 import cors from "cors";
-import {MongoClient, ServerApiVersion} from "mongodb"
+import {MongoClient, ServerApiVersion, Collection} from "mongodb"
 import * as dotenv from "dotenv";
 
 dotenv.config();
@@ -17,12 +17,16 @@ const client = new MongoClient(uri, {
   }
 });
 
+let collection: Collection;
+
 client.connect()
 .catch(error => { 
   console.error(error);
   process.exit(1);
 }).then(async client =>{
   console.log("Connected to Database")
+
+  collection = client.db('sample_restaurants').collection("neighborhoods");
 
   app.listen(process.env.PORT, () =>{
     console.log('Server started')
@@ -33,9 +37,9 @@ app.get('/', async (request: Request, response: Response) => {
   response.send('Express + TypeScript Server New');
 });
 
-app.get('/restaurants', async (request: Request, response: Response) => {
-  let collection = await client.db('sample_restaurants').collection("restaurants").find().toArray();
-  response.send(collection);
+app.get('/neighborhoods', async (request: Request, response: Response) => {
+  let collectionData = await collection.find().toArray();
+  response.send(collectionData);
 });
 
 // // MotileParts
