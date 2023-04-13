@@ -50,28 +50,23 @@ const client = new mongodb_1.MongoClient(uri, {
         deprecationErrors: true,
     }
 });
-function run() {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            // Connect the client to the server	(optional starting in v4.7)
-            yield client.connect();
-            // Send a ping to confirm a successful connection
-            yield client.db("admin").command({ ping: 1 });
-            console.log("Connected to Database");
-            app.listen(process.env.PORT, () => {
-                console.log('Server started');
-            });
-        }
-        finally {
-            // Ensures that the client will close when you finish/error
-            yield client.close();
-        }
+client.connect()
+    .catch(error => {
+    console.error(error);
+    process.exit(1);
+}).then((client) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("Connected to Database");
+    app.listen(process.env.PORT, () => {
+        console.log('Server started');
     });
-}
-run().catch(console.dir);
-app.get('/', (request, response) => {
+}));
+app.get('/', (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     response.send('Express + TypeScript Server New');
-});
+}));
+app.get('/restaurants', (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+    let collection = yield client.db('sample_restaurants').collection("restaurants").find().toArray();
+    response.send(collection);
+}));
 // // MotileParts
 // app.get('/MotileParts', motilePartsCollection.getMotileParts);
 // // Login/Register

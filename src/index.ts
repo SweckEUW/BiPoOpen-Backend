@@ -17,26 +17,25 @@ const client = new MongoClient(uri, {
   }
 });
 
-async function run() {
-  try {
-    // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
-    // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
-    console.log("Connected to Database")
+client.connect()
+.catch(error => { 
+  console.error(error);
+  process.exit(1);
+}).then(async client =>{
+  console.log("Connected to Database")
 
-    app.listen(process.env.PORT, () => {
-      console.log('Server started');
-    });
-  } finally {
-    // Ensures that the client will close when you finish/error
-    await client.close();
-  }
-}
-run().catch(console.dir);
+  app.listen(process.env.PORT, () =>{
+    console.log('Server started')
+  });
+})
 
-app.get('/', (request: Request, response: Response) => {
+app.get('/', async (request: Request, response: Response) => {
   response.send('Express + TypeScript Server New');
+});
+
+app.get('/restaurants', async (request: Request, response: Response) => {
+  let collection = await client.db('sample_restaurants').collection("restaurants").find().toArray();
+  response.send(collection);
 });
 
 // // MotileParts
