@@ -1,12 +1,15 @@
 import express, { Express, Request, Response} from "express";
 import cors from "cors";
-import {MongoClient, ServerApiVersion, Collection} from "mongodb"
+import {MongoClient, ServerApiVersion} from "mongodb"
 import * as dotenv from "dotenv";
+
+import {tournamentCollection} from "./tournamentCollection"
 
 dotenv.config();
 
 const app: Express = express();
 app.use(cors());
+app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORT}@cluster0.wpwuaak.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
@@ -24,19 +27,15 @@ client.connect()
 }).then(async client =>{
   console.log("Connected to Database")
 
+  await tournamentCollection.retrieveUsersCollection(client);
+
   app.listen(process.env.PORT, () =>{
     console.log('Server started')
   });
 })
 
-app.get('/', async (request: Request, response: Response) => {
-  response.send('Express + TypeScript Server New');
-});
-
-app.get('/teams', async (request: Request, response: Response) => {
-  let collectionData = await client.db('bipoopen').collection("teams").find().toArray();
-  response.send(collectionData);
-});
+app.post('/createTournament', tournamentCollection.createTournament);
+app.get('/tournaments', tournamentCollection.getTournaments);
 
 // // MotileParts
 // app.get('/MotileParts', motilePartsCollection.getMotileParts);

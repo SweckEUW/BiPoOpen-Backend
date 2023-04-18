@@ -39,9 +39,11 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const mongodb_1 = require("mongodb");
 const dotenv = __importStar(require("dotenv"));
+const tournamentCollection_1 = require("./tournamentCollection");
 dotenv.config();
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
+app.use(express_1.default.json());
 const uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORT}@cluster0.wpwuaak.mongodb.net/?retryWrites=true&w=majority`;
 const client = new mongodb_1.MongoClient(uri, {
     serverApi: {
@@ -56,17 +58,13 @@ client.connect()
     process.exit(1);
 }).then((client) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("Connected to Database");
+    yield tournamentCollection_1.tournamentCollection.retrieveUsersCollection(client);
     app.listen(process.env.PORT, () => {
         console.log('Server started');
     });
 }));
-app.get('/', (request, response) => __awaiter(void 0, void 0, void 0, function* () {
-    response.send('Express + TypeScript Server New');
-}));
-app.get('/teams', (request, response) => __awaiter(void 0, void 0, void 0, function* () {
-    let collectionData = yield client.db('bipoopen').collection("teams").find().toArray();
-    response.send(collectionData);
-}));
+app.post('/createTournament', tournamentCollection_1.tournamentCollection.createTournament);
+app.get('/tournaments', tournamentCollection_1.tournamentCollection.getTournaments);
 // // MotileParts
 // app.get('/MotileParts', motilePartsCollection.getMotileParts);
 // // Login/Register
