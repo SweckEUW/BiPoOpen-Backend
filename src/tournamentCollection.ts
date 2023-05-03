@@ -4,7 +4,7 @@ import {Request, Response} from "express";
 let tournamentsCollection: Collection;
 
 export class tournamentCollection{
-    static async retrieveUsersCollection(client : MongoClient){
+    static async retrieveTournamentsCollection(client : MongoClient){
         if(tournamentsCollection)
             return 
         
@@ -31,8 +31,8 @@ export class tournamentCollection{
     static async createTournament(request: Request, response: Response) {
         let tournament = request.body;
 
-        // TODO: Add tournament to collection
-        const result = await tournamentsCollection.insertOne(tournament);
+        // Add tournament to collection
+        await tournamentsCollection.insertOne(tournament);
 
         response.json({success: true, message: 'Tournament erstellt'});
     }

@@ -9,41 +9,41 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.tournamentCollection = void 0;
-let tournamentsCollection;
-class tournamentCollection {
-    static retrieveTournamentsCollection(client) {
+exports.teamCollection = void 0;
+let teamsCollection;
+class teamCollection {
+    static retrieveTeamCollection(client) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (tournamentsCollection)
+            if (teamsCollection)
                 return;
             try {
-                tournamentsCollection = yield client.db('bipoopen').collection("tournaments");
-                if (tournamentsCollection)
-                    console.log("Retrieved tournamentCollection");
+                teamsCollection = yield client.db('bipoopen').collection("teams");
+                if (teamsCollection)
+                    console.log("Retrieved teamsCollection");
                 else
-                    console.error("Error retrieving tournamentCollection");
+                    console.error("Error retrieving teamsCollection");
             }
             catch (error) {
-                console.error("cant connect to tournamentCollection database" + error);
+                console.error("cant connect to teamsCollection database" + error);
             }
         });
     }
-    static getTournaments(request, response) {
+    static getTeams(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
-            let tournaments = yield tournamentsCollection.find().toArray();
-            if (tournaments)
-                response.json({ success: true, message: 'Tournaments gefunden', tournaments: tournaments });
+            let teams = yield teamsCollection.find().toArray();
+            if (teams)
+                response.json({ success: true, message: 'Teams gefunden', teams: teams });
             else
-                response.json({ success: false, message: 'Keine Tournaments gefunden' });
+                response.json({ success: false, message: 'Keine Teams gefunden' });
         });
     }
-    static createTournament(request, response) {
+    static createTeam(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             let tournament = request.body;
             // Add tournament to collection
-            yield tournamentsCollection.insertOne(tournament);
-            response.json({ success: true, message: 'Tournament erstellt' });
+            yield teamsCollection.insertOne(tournament);
+            response.json({ success: true, message: 'Team erstellt' });
         });
     }
 }
-exports.tournamentCollection = tournamentCollection;
+exports.teamCollection = teamCollection;

@@ -1,9 +1,10 @@
-import express, { Express, Request, Response} from "express";
+import express, { Express} from "express";
 import cors from "cors";
 import {MongoClient, ServerApiVersion} from "mongodb"
 import * as dotenv from "dotenv";
 
 import {tournamentCollection} from "./tournamentCollection"
+import {teamCollection} from "./teamCollection"
 
 dotenv.config();
 
@@ -27,7 +28,8 @@ client.connect()
 }).then(async client =>{
   console.log("Connected to Database")
 
-  await tournamentCollection.retrieveUsersCollection(client);
+  await tournamentCollection.retrieveTournamentsCollection(client);
+  await teamCollection.retrieveTeamCollection(client);
 
   app.listen(process.env.PORT, () =>{
     console.log('Server started')
@@ -37,33 +39,9 @@ client.connect()
 app.post('/createTournament', tournamentCollection.createTournament);
 app.get('/tournaments', tournamentCollection.getTournaments);
 
-// // MotileParts
-// app.get('/MotileParts', motilePartsCollection.getMotileParts);
+app.post('/createTeam', teamCollection.createTeam);
+app.get('/teams', teamCollection.getTeams);
 
-// // Login/Register
-// app.post('/Login', UsersCollection.login);
-// app.post('/LoginJWT', Middleware.verifyJWT, UsersCollection.loginJWT);
-// app.post('/StayAlive', Middleware.verifyJWT, UsersCollection.stayAlive);
-// app.post('/Register', UsersCollection.addUser);
-// app.get('/VerifyEmail', UsersCollection.verifyUser);
-
-// // UserData
-// app.post('/User/Data', Middleware.verifyJWT, UsersCollection.getUserDataFromUser);
-// app.post('/User/Data/AddAddress', Middleware.verifyJWT, userDataCollection.addAddress);
-// app.post('/User/Data/RemoveAddress', Middleware.verifyJWT, userDataCollection.removeAddress);
-// app.post('/User/Data/UploadProfilePic',  multer({ storage: ImageUploadHandler.getStorage() }).single('file'), Middleware.verifyJWT, userDataCollection.updateProfilePic);
-// app.post('/User/Data/Modify', Middleware.verifyJWT, userDataCollection.modifyUserData);
-
-// // UserConfigurations
-// app.post('/User/Configs', Middleware.verifyJWT, UsersCollection.getConfigFromUser);
-// app.post('/User/Configs/Remove', Middleware.verifyJWT, UserConfigsCollection.removeUserConfiguration);
-// app.post('/User/Configs/Add', Middleware.verifyJWT, UserConfigsCollection.addUserConfiguration);
-// app.post('/User/Configs/GenerateThumbnail', Middleware.verifyJWT, BlenderJobs.renderThumbnail);
-// app.post('/User/Configs/Buy', Middleware.verifyJWT, UserConfigsCollection.setUserConfigToBought)
-
-// // static assets - public folder
 // let filename = fileURLToPath(import.meta.url);
 // let dirname = path.dirname(filename);
 // app.use(express.static(path.join(dirname, 'public')));
-
-// export default app
