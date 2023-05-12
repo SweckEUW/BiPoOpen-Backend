@@ -1,5 +1,6 @@
 import {Collection, MongoClient} from "mongodb"
 import {Request, Response} from "express";
+import { ObjectId } from "bson";
 
 let tournamentsCollection: Collection;
 
@@ -19,6 +20,7 @@ export class tournamentCollection{
         }
     }
 
+    // General
     static async getTournaments(request: Request, response: Response){
         let tournaments = await tournamentsCollection.find().toArray();
 
@@ -35,6 +37,37 @@ export class tournamentCollection{
         await tournamentsCollection.insertOne(tournament);
 
         response.json({success: true, message: 'Tournament erstellt'});
+    }
+
+
+    // Teams
+    static async addTeam(request: Request, response: Response) {
+        let team = request.body.team;
+        let tournamentID = request.body.tournamentID;
+
+        await tournamentsCollection.updateOne({"_id": {$eq: ObjectId.createFromHexString(tournamentID)}},{$push: {teams: team}});
+
+        response.json({success: true, message: 'Team hinzugefügt'});
+    }
+
+    static async editTeam(request: Request, response: Response) {
+        let team = request.body.team;
+        let tournamentID = request.body.tournamentID;
+        let selectedTeamName = request.body.selectedTeamName;
+
+        // TODO: Replace complete team element instead of single team values
+        await tournamentsCollection.updateOne({"_id": {$eq: ObjectId.createFromHexString(tournamentID)}, "teams.name": selectedTeamName }, { $set: { "teams.$.name": team.name, "teams.$.players": team.players } });
+        
+        response.json({success: true, message: 'Team bearbeitet'});
+    }
+
+    static async removeTeam(request: Request, response: Response) {
+        let tournamentID = request.body.tournamentID;
+        let selectedTeamName = request.body.selectedTeamName;
+      
+        await tournamentsCollection.updateOne({"_id": {$eq: ObjectId.createFromHexString(tournamentID)}}, { $pull: { teams: { name: selectedTeamName } } });
+
+        response.json({success: true, message: 'Team gelöscht'});
     }
 
 }

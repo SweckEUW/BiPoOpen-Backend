@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.tournamentCollection = void 0;
+const bson_1 = require("bson");
 let tournamentsCollection;
 class tournamentCollection {
     static retrieveTournamentsCollection(client) {
@@ -28,6 +29,7 @@ class tournamentCollection {
             }
         });
     }
+    // General
     static getTournaments(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             let tournaments = yield tournamentsCollection.find().toArray();
@@ -43,6 +45,33 @@ class tournamentCollection {
             // Add tournament to collection
             yield tournamentsCollection.insertOne(tournament);
             response.json({ success: true, message: 'Tournament erstellt' });
+        });
+    }
+    // Teams
+    static addTeam(request, response) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let team = request.body.team;
+            let tournamentID = request.body.tournamentID;
+            yield tournamentsCollection.updateOne({ "_id": { $eq: bson_1.ObjectId.createFromHexString(tournamentID) } }, { $push: { teams: team } });
+            response.json({ success: true, message: 'Team hinzugefügt' });
+        });
+    }
+    static editTeam(request, response) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let team = request.body.team;
+            let tournamentID = request.body.tournamentID;
+            let selectedTeamName = request.body.selectedTeamName;
+            // TODO: Replace complete team element instead of single team values
+            yield tournamentsCollection.updateOne({ "_id": { $eq: bson_1.ObjectId.createFromHexString(tournamentID) }, "teams.name": selectedTeamName }, { $set: { "teams.$.name": team.name, "teams.$.players": team.players } });
+            response.json({ success: true, message: 'Team bearbeitet' });
+        });
+    }
+    static removeTeam(request, response) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let tournamentID = request.body.tournamentID;
+            let selectedTeamName = request.body.selectedTeamName;
+            yield tournamentsCollection.updateOne({ "_id": { $eq: bson_1.ObjectId.createFromHexString(tournamentID) } }, { $pull: { teams: { name: selectedTeamName } } });
+            response.json({ success: true, message: 'Team gelöscht' });
         });
     }
 }

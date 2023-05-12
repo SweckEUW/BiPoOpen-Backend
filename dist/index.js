@@ -40,7 +40,6 @@ const cors_1 = __importDefault(require("cors"));
 const mongodb_1 = require("mongodb");
 const dotenv = __importStar(require("dotenv"));
 const tournamentCollection_1 = require("./tournamentCollection");
-const teamCollection_1 = require("./teamCollection");
 dotenv.config();
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
@@ -60,15 +59,17 @@ client.connect()
 }).then((client) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("Connected to Database");
     yield tournamentCollection_1.tournamentCollection.retrieveTournamentsCollection(client);
-    yield teamCollection_1.teamCollection.retrieveTeamCollection(client);
     app.listen(process.env.PORT, () => {
         console.log('Server started');
     });
 }));
-app.post('/createTournament', tournamentCollection_1.tournamentCollection.createTournament);
+// Tournament
 app.get('/tournaments', tournamentCollection_1.tournamentCollection.getTournaments);
-app.post('/createTeam', teamCollection_1.teamCollection.createTeam);
-app.get('/teams', teamCollection_1.teamCollection.getTeams);
+app.post('/createTournament', tournamentCollection_1.tournamentCollection.createTournament);
+// Team
+app.post('/addTeam', tournamentCollection_1.tournamentCollection.addTeam);
+app.post('/editTeam', tournamentCollection_1.tournamentCollection.editTeam);
+app.post('/removeTeam', tournamentCollection_1.tournamentCollection.removeTeam);
 // let filename = fileURLToPath(import.meta.url);
 // let dirname = path.dirname(filename);
 // app.use(express.static(path.join(dirname, 'public')));

@@ -4,7 +4,6 @@ import {MongoClient, ServerApiVersion} from "mongodb"
 import * as dotenv from "dotenv";
 
 import {tournamentCollection} from "./tournamentCollection"
-import {teamCollection} from "./teamCollection"
 
 dotenv.config();
 
@@ -29,18 +28,20 @@ client.connect()
   console.log("Connected to Database")
 
   await tournamentCollection.retrieveTournamentsCollection(client);
-  await teamCollection.retrieveTeamCollection(client);
 
   app.listen(process.env.PORT, () =>{
     console.log('Server started')
   });
 })
 
-app.post('/createTournament', tournamentCollection.createTournament);
+// Tournament
 app.get('/tournaments', tournamentCollection.getTournaments);
+app.post('/createTournament', tournamentCollection.createTournament);
 
-app.post('/createTeam', teamCollection.createTeam);
-app.get('/teams', teamCollection.getTeams);
+// Team
+app.post('/addTeam', tournamentCollection.addTeam);
+app.post('/editTeam', tournamentCollection.editTeam);
+app.post('/removeTeam', tournamentCollection.removeTeam);
 
 // let filename = fileURLToPath(import.meta.url);
 // let dirname = path.dirname(filename);
