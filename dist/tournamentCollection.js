@@ -74,5 +74,13 @@ class tournamentCollection {
             response.json({ success: true, message: 'Team gelöscht' });
         });
     }
+    static setGroups(request, response) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let tournamentID = request.body.tournamentID;
+            let groups = request.body.groups;
+            yield tournamentsCollection.updateOne({ "_id": { $eq: bson_1.ObjectId.createFromHexString(tournamentID) } }, { $set: { groups: groups } });
+            response.json({ success: true, message: 'Gruppen gesetzt' });
+        });
+    }
 }
 exports.tournamentCollection = tournamentCollection;

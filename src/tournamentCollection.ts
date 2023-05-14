@@ -45,7 +45,7 @@ export class tournamentCollection{
         let team = request.body.team;
         let tournamentID = request.body.tournamentID;
 
-        await tournamentsCollection.updateOne({"_id": {$eq: ObjectId.createFromHexString(tournamentID)}},{$push: {teams: team}});
+        await tournamentsCollection.updateOne({"_id": {$eq: ObjectId.createFromHexString(tournamentID)}}, {$push: {teams: team}});
 
         response.json({success: true, message: 'Team hinzugefügt'});
     }
@@ -69,5 +69,15 @@ export class tournamentCollection{
 
         response.json({success: true, message: 'Team gelöscht'});
     }
+
+    static async setGroups(request: Request, response: Response) {
+        let tournamentID = request.body.tournamentID;
+        let groups = request.body.groups;
+      
+        await tournamentsCollection.updateOne({"_id": {$eq: ObjectId.createFromHexString(tournamentID)}}, {$set: {groups: groups}});
+
+        response.json({success: true, message: 'Gruppen gesetzt'});
+    }
+    
 
 }

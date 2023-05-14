@@ -43,6 +43,9 @@ app.post('/addTeam', tournamentCollection.addTeam);
 app.post('/editTeam', tournamentCollection.editTeam);
 app.post('/removeTeam', tournamentCollection.removeTeam);
 
+// Group Stage
+app.post('/setGroups', tournamentCollection.setGroups);
+
 // let filename = fileURLToPath(import.meta.url);
 // let dirname = path.dirname(filename);
 // app.use(express.static(path.join(dirname, 'public')));
