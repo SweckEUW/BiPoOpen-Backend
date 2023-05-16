@@ -74,10 +74,18 @@ export class tournamentCollection{
         let tournamentID = request.body.tournamentID;
         let groups = request.body.groups;
       
-        await tournamentsCollection.updateOne({"_id": {$eq: ObjectId.createFromHexString(tournamentID)}}, {$set: {groups: groups}});
+        await tournamentsCollection.updateOne({"_id": {$eq: ObjectId.createFromHexString(tournamentID)}}, {$set: {"groupPhase.groups": groups}});
 
         response.json({success: true, message: 'Gruppen gesetzt'});
     }
-    
+
+    static async setMatches(request: Request, response: Response) {
+        let tournamentID = request.body.tournamentID;
+        let matches = request.body.matches;
+      
+        await tournamentsCollection.updateOne({"_id": {$eq: ObjectId.createFromHexString(tournamentID)}}, {$set: {"groupPhase.matches": matches}});
+
+        response.json({success: true, message: 'Matches gesetzt'});
+    }
 
 }

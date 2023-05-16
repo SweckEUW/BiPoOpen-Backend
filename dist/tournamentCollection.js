@@ -78,8 +78,16 @@ class tournamentCollection {
         return __awaiter(this, void 0, void 0, function* () {
             let tournamentID = request.body.tournamentID;
             let groups = request.body.groups;
-            yield tournamentsCollection.updateOne({ "_id": { $eq: bson_1.ObjectId.createFromHexString(tournamentID) } }, { $set: { groups: groups } });
+            yield tournamentsCollection.updateOne({ "_id": { $eq: bson_1.ObjectId.createFromHexString(tournamentID) } }, { $set: { "groupPhase.groups": groups } });
             response.json({ success: true, message: 'Gruppen gesetzt' });
+        });
+    }
+    static setMatches(request, response) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let tournamentID = request.body.tournamentID;
+            let matches = request.body.matches;
+            yield tournamentsCollection.updateOne({ "_id": { $eq: bson_1.ObjectId.createFromHexString(tournamentID) } }, { $set: { "groupPhase.matches": matches } });
+            response.json({ success: true, message: 'Matches gesetzt' });
         });
     }
 }

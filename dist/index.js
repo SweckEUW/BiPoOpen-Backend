@@ -72,6 +72,7 @@ app.post('/editTeam', tournamentCollection_1.tournamentCollection.editTeam);
 app.post('/removeTeam', tournamentCollection_1.tournamentCollection.removeTeam);
 // Group Stage
 app.post('/setGroups', tournamentCollection_1.tournamentCollection.setGroups);
+app.post('/setMatches', tournamentCollection_1.tournamentCollection.setMatches);
 // let filename = fileURLToPath(import.meta.url);
 // let dirname = path.dirname(filename);
 // app.use(express.static(path.join(dirname, 'public')));
