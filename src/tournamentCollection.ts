@@ -34,7 +34,7 @@ export class tournamentCollection{
         let tournaments = await tournamentsCollection.find().toArray();
         let tournament = tournaments.find((tournament:any) => tournament.name == tournamentName);
         if(tournaments)
-            response.json({success: true, message: 'Tournaments gefunden', tournament: tournament});
+            response.json({success: true, message: 'Tournament "' + tournamentName + '" gefunden', tournament: tournament});
         else    
             response.json({success: false, message: 'Keine Tournaments gefunden'}); 
     }
@@ -50,7 +50,7 @@ export class tournamentCollection{
         // Add tournament to collection
         await tournamentsCollection.insertOne(tournament);
 
-        response.json({success: true, message: 'Tournament erstellt'});
+        response.json({success: true, message: 'Tournament "' + tournament.name + '" erstellt'});
     }
 
 
@@ -63,7 +63,7 @@ export class tournamentCollection{
 
         await tournamentsCollection.updateOne({"_id": {$eq: ObjectId.createFromHexString(tournamentID)}}, {$push: {teams: team}});
 
-        response.json({success: true, message: 'Team hinzugefügt'});
+        response.json({success: true, message:  'Team "' + team.name + '" hinzugefügt'});
     }
 
     static async editTeam(request: Request, response: Response) {
@@ -73,7 +73,7 @@ export class tournamentCollection{
         // TODO: Replace complete team element instead of single team values
         await tournamentsCollection.updateOne({"_id": {$eq: ObjectId.createFromHexString(tournamentID)}, "teams._id": team._id }, { $set: { "teams.$.name": team.name, "teams.$.players": team.players } });
         
-        response.json({success: true, message: 'Team bearbeitet'});
+        response.json({success: true, message: 'Team "' + team.name + '" bearbeitet'});
     }
 
     static async removeTeam(request: Request, response: Response) {

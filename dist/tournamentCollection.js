@@ -45,7 +45,7 @@ class tournamentCollection {
             let tournaments = yield tournamentsCollection.find().toArray();
             let tournament = tournaments.find((tournament) => tournament.name == tournamentName);
             if (tournaments)
-                response.json({ success: true, message: 'Tournaments gefunden', tournament: tournament });
+                response.json({ success: true, message: 'Tournament "' + tournamentName + '" gefunden', tournament: tournament });
             else
                 response.json({ success: false, message: 'Keine Tournaments gefunden' });
         });
@@ -59,7 +59,7 @@ class tournamentCollection {
                     tournament.teams[i]._id = new mongodb_1.ObjectId().toString();
             // Add tournament to collection
             yield tournamentsCollection.insertOne(tournament);
-            response.json({ success: true, message: 'Tournament erstellt' });
+            response.json({ success: true, message: 'Tournament "' + tournament.name + '" erstellt' });
         });
     }
     // Teams
@@ -69,7 +69,7 @@ class tournamentCollection {
             team._id = new mongodb_1.ObjectId().toString();
             let tournamentID = request.body.tournamentID;
             yield tournamentsCollection.updateOne({ "_id": { $eq: mongodb_1.ObjectId.createFromHexString(tournamentID) } }, { $push: { teams: team } });
-            response.json({ success: true, message: 'Team hinzugefügt' });
+            response.json({ success: true, message: 'Team "' + team.name + '" hinzugefügt' });
         });
     }
     static editTeam(request, response) {
@@ -78,7 +78,7 @@ class tournamentCollection {
             let tournamentID = request.body.tournamentID;
             // TODO: Replace complete team element instead of single team values
             yield tournamentsCollection.updateOne({ "_id": { $eq: mongodb_1.ObjectId.createFromHexString(tournamentID) }, "teams._id": team._id }, { $set: { "teams.$.name": team.name, "teams.$.players": team.players } });
-            response.json({ success: true, message: 'Team bearbeitet' });
+            response.json({ success: true, message: 'Team "' + team.name + '" bearbeitet' });
         });
     }
     static removeTeam(request, response) {
