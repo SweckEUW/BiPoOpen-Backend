@@ -65,6 +65,7 @@ client.connect()
 }));
 // Tournament
 app.get('/tournaments', tournamentCollection_1.tournamentCollection.getTournaments);
+app.post('/getTournamentByName', tournamentCollection_1.tournamentCollection.getTournamentByName);
 app.post('/createTournament', tournamentCollection_1.tournamentCollection.createTournament);
 // Team
 app.post('/addTeam', tournamentCollection_1.tournamentCollection.addTeam);

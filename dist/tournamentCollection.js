@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.tournamentCollection = void 0;
-const bson_1 = require("bson");
+const mongodb_1 = require("mongodb");
 let tournamentsCollection;
 class tournamentCollection {
     static retrieveTournamentsCollection(client) {
@@ -39,9 +39,24 @@ class tournamentCollection {
                 response.json({ success: false, message: 'Keine Tournaments gefunden' });
         });
     }
+    static getTournamentByName(request, response) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let tournamentName = request.body.tournamentName;
+            let tournaments = yield tournamentsCollection.find().toArray();
+            let tournament = tournaments.find((tournament) => tournament.name == tournamentName);
+            if (tournaments)
+                response.json({ success: true, message: 'Tournaments gefunden', tournament: tournament });
+            else
+                response.json({ success: false, message: 'Keine Tournaments gefunden' });
+        });
+    }
     static createTournament(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             let tournament = request.body;
+            // DEBUG!!
+            if (tournament.teams)
+                for (let i = 0; i < tournament.teams.length; i++)
+                    tournament.teams[i]._id = new mongodb_1.ObjectId().toString();
             // Add tournament to collection
             yield tournamentsCollection.insertOne(tournament);
             response.json({ success: true, message: 'Tournament erstellt' });
@@ -51,8 +66,9 @@ class tournamentCollection {
     static addTeam(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             let team = request.body.team;
+            team._id = new mongodb_1.ObjectId().toString();
             let tournamentID = request.body.tournamentID;
-            yield tournamentsCollection.updateOne({ "_id": { $eq: bson_1.ObjectId.createFromHexString(tournamentID) } }, { $push: { teams: team } });
+            yield tournamentsCollection.updateOne({ "_id": { $eq: mongodb_1.ObjectId.createFromHexString(tournamentID) } }, { $push: { teams: team } });
             response.json({ success: true, message: 'Team hinzugefügt' });
         });
     }
@@ -60,17 +76,16 @@ class tournamentCollection {
         return __awaiter(this, void 0, void 0, function* () {
             let team = request.body.team;
             let tournamentID = request.body.tournamentID;
-            let selectedTeamName = request.body.selectedTeamName;
             // TODO: Replace complete team element instead of single team values
-            yield tournamentsCollection.updateOne({ "_id": { $eq: bson_1.ObjectId.createFromHexString(tournamentID) }, "teams.name": selectedTeamName }, { $set: { "teams.$.name": team.name, "teams.$.players": team.players } });
+            yield tournamentsCollection.updateOne({ "_id": { $eq: mongodb_1.ObjectId.createFromHexString(tournamentID) }, "teams._id": team._id }, { $set: { "teams.$.name": team.name, "teams.$.players": team.players } });
             response.json({ success: true, message: 'Team bearbeitet' });
         });
     }
     static removeTeam(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             let tournamentID = request.body.tournamentID;
-            let selectedTeamName = request.body.selectedTeamName;
-            yield tournamentsCollection.updateOne({ "_id": { $eq: bson_1.ObjectId.createFromHexString(tournamentID) } }, { $pull: { teams: { name: selectedTeamName } } });
+            let teamID = request.body.teamID;
+            yield tournamentsCollection.updateOne({ "_id": { $eq: mongodb_1.ObjectId.createFromHexString(tournamentID) } }, { $pull: { teams: { _id: teamID } } });
             response.json({ success: true, message: 'Team gelöscht' });
         });
     }
@@ -78,7 +93,7 @@ class tournamentCollection {
         return __awaiter(this, void 0, void 0, function* () {
             let tournamentID = request.body.tournamentID;
             let groups = request.body.groups;
-            yield tournamentsCollection.updateOne({ "_id": { $eq: bson_1.ObjectId.createFromHexString(tournamentID) } }, { $set: { "groupPhase.groups": groups } });
+            yield tournamentsCollection.updateOne({ "_id": { $eq: mongodb_1.ObjectId.createFromHexString(tournamentID) } }, { $set: { "groupPhase.groups": groups } });
             response.json({ success: true, message: 'Gruppen gesetzt' });
         });
     }
@@ -86,7 +101,7 @@ class tournamentCollection {
         return __awaiter(this, void 0, void 0, function* () {
             let tournamentID = request.body.tournamentID;
             let matches = request.body.matches;
-            yield tournamentsCollection.updateOne({ "_id": { $eq: bson_1.ObjectId.createFromHexString(tournamentID) } }, { $set: { "groupPhase.matches": matches } });
+            yield tournamentsCollection.updateOne({ "_id": { $eq: mongodb_1.ObjectId.createFromHexString(tournamentID) } }, { $set: { "groupPhase.matches": matches } });
             response.json({ success: true, message: 'Matches gesetzt' });
         });
     }

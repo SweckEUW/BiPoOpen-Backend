@@ -36,6 +36,7 @@ client.connect()
 
 // Tournament
 app.get('/tournaments', tournamentCollection.getTournaments);
+app.post('/getTournamentByName', tournamentCollection.getTournamentByName);
 app.post('/createTournament', tournamentCollection.createTournament);
 
 // Team
