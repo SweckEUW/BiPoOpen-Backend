@@ -46,7 +46,8 @@ app.post('/removeTeam', tournamentCollection.removeTeam);
 
 // Group Stage
 app.post('/setGroups', tournamentCollection.setGroups);
-app.post('/setMatches', tournamentCollection.setMatches);
+app.post('/setMatchesGroupPhase', tournamentCollection.setMatchesGroupPhase);
+app.post('/setMatchesKOPhase', tournamentCollection.setMatchesKOPhase);
 
 // let filename = fileURLToPath(import.meta.url);
 // let dirname = path.dirname(filename);

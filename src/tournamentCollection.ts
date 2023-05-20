@@ -94,13 +94,22 @@ export class tournamentCollection{
         response.json({success: true, message: 'Gruppen gesetzt'});
     }
 
-    static async setMatches(request: Request, response: Response) {
+    static async setMatchesGroupPhase(request: Request, response: Response) {
         let tournamentID = request.body.tournamentID;
         let matches = request.body.matches;
 
         await tournamentsCollection.updateOne({"_id": {$eq: ObjectId.createFromHexString(tournamentID)}}, {$set: {"groupPhase.matches": matches}});
 
-        response.json({success: true, message: 'Matches gesetzt'});
+        response.json({success: true, message: 'Matches für Gruppenphase gesetzt'});
+    }
+
+    static async setMatchesKOPhase(request: Request, response: Response) {
+        let tournamentID = request.body.tournamentID;
+        let matches = request.body.matches;
+
+        await tournamentsCollection.updateOne({"_id": {$eq: ObjectId.createFromHexString(tournamentID)}}, {$set: {"koPhase.matches": matches}});
+
+        response.json({success: true, message: 'Matches für KO-Phase gesetzt'});
     }
 
 }

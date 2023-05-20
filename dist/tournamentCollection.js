@@ -97,12 +97,20 @@ class tournamentCollection {
             response.json({ success: true, message: 'Gruppen gesetzt' });
         });
     }
-    static setMatches(request, response) {
+    static setMatchesGroupPhase(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             let tournamentID = request.body.tournamentID;
             let matches = request.body.matches;
             yield tournamentsCollection.updateOne({ "_id": { $eq: mongodb_1.ObjectId.createFromHexString(tournamentID) } }, { $set: { "groupPhase.matches": matches } });
-            response.json({ success: true, message: 'Matches gesetzt' });
+            response.json({ success: true, message: 'Matches für Gruppenphase gesetzt' });
+        });
+    }
+    static setMatchesKOPhase(request, response) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let tournamentID = request.body.tournamentID;
+            let matches = request.body.matches;
+            yield tournamentsCollection.updateOne({ "_id": { $eq: mongodb_1.ObjectId.createFromHexString(tournamentID) } }, { $set: { "koPhase.matches": matches } });
+            response.json({ success: true, message: 'Matches für KO-Phase gesetzt' });
         });
     }
 }
