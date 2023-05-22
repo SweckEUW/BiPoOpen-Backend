@@ -98,6 +98,12 @@ export class tournamentCollection{
         let tournamentID = request.body.tournamentID;
         let matches = request.body.matches;
 
+        matches.forEach((matchesForGroup:any) => {
+            matchesForGroup.forEach((match:any) => {
+                match._id = new ObjectId().toString();    
+            });
+        });
+
         await tournamentsCollection.updateOne({"_id": {$eq: ObjectId.createFromHexString(tournamentID)}}, {$set: {"groupPhase.matches": matches}});
 
         response.json({success: true, message: 'Matches für Gruppenphase gesetzt'});
@@ -106,6 +112,12 @@ export class tournamentCollection{
     static async setMatchesKOPhase(request: Request, response: Response) {
         let tournamentID = request.body.tournamentID;
         let matches = request.body.matches;
+
+        matches.forEach((stage:any) => {
+            stage.forEach((match:any) => {
+                match._id = new ObjectId().toString();    
+            });
+        });
 
         await tournamentsCollection.updateOne({"_id": {$eq: ObjectId.createFromHexString(tournamentID)}}, {$set: {"koPhase.matches": matches}});
 

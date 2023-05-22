@@ -101,6 +101,11 @@ class tournamentCollection {
         return __awaiter(this, void 0, void 0, function* () {
             let tournamentID = request.body.tournamentID;
             let matches = request.body.matches;
+            matches.forEach((matchesForGroup) => {
+                matchesForGroup.forEach((match) => {
+                    match._id = new mongodb_1.ObjectId().toString();
+                });
+            });
             yield tournamentsCollection.updateOne({ "_id": { $eq: mongodb_1.ObjectId.createFromHexString(tournamentID) } }, { $set: { "groupPhase.matches": matches } });
             response.json({ success: true, message: 'Matches für Gruppenphase gesetzt' });
         });
@@ -109,6 +114,11 @@ class tournamentCollection {
         return __awaiter(this, void 0, void 0, function* () {
             let tournamentID = request.body.tournamentID;
             let matches = request.body.matches;
+            matches.forEach((stage) => {
+                stage.forEach((match) => {
+                    match._id = new mongodb_1.ObjectId().toString();
+                });
+            });
             yield tournamentsCollection.updateOne({ "_id": { $eq: mongodb_1.ObjectId.createFromHexString(tournamentID) } }, { $set: { "koPhase.matches": matches } });
             response.json({ success: true, message: 'Matches für KO-Phase gesetzt' });
         });
